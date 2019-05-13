@@ -254,7 +254,7 @@ namespace Vstancer.Client
 
             Action<int, float, float, float, float, object, object, object, object> setPreset = SetVstancerPreset;
             Exports.Add("SetVstancerPreset", setPreset);
-            EventHandlers["setVstancerPreset"] += new Action<int, float, float, float, float, object, object, object, object>(SetVstancerPreset);
+            EventHandlers["setVstancerPreset"] += new Action<int, float[]>(ParseForSetVstancerPreset);
             Func<int, float[]> getPreset = GetVstancerPreset;
             Exports.Add("GetVstancerPreset", getPreset);
 
@@ -469,6 +469,10 @@ namespace Vstancer.Client
                 preset.DefaultOffsetX[frontCount],
                 preset.DefaultRotationY[frontCount],
             };
+        }
+
+        private void ParseForSetVstancerPreset(int vehicle, float[] preset) {
+            SetVstancerPreset(vehicle, preset[0], preset[1], preset[2], preset[3], preset[4], preset[5], preset[6], preset[7]);
         }
 
         /// <summary>

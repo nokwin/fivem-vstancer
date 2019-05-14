@@ -102,7 +102,7 @@ namespace Vstancer.Client
                 {
                     int playerPed = PlayerPedId();
                     int vehicle = GetVehiclePedIsIn(playerPed, false);
-                    var plate = GetVehiclePlateType(vehicle);
+                    var plate = GetVehicleNumberPlateText(vehicle);
                     string preset = GetVstancerPreset(vehicle);
 
                     TriggerServerEvent("saveStancerPreset", plate, preset);

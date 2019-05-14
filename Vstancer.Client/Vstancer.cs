@@ -472,7 +472,9 @@ namespace Vstancer.Client
         }
 
         private void ParseForSetVstancerPreset(int vehicle, float[] preset) {
-            SetVstancerPreset(vehicle, preset[0], preset[1], preset[2], preset[3], preset[4], preset[5], preset[6], preset[7]);
+            Debug.WriteLine(typeof(preset));
+            Debug.WriteLine(preset);
+            // SetVstancerPreset(vehicle, preset[0], preset[1], preset[2], preset[3], preset[4], preset[5], preset[6], preset[7]);
         }
 
         /// <summary>

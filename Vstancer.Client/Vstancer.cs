@@ -273,7 +273,7 @@ namespace Vstancer.Client
                 }));
             }
 
-            Action<int, string> setPreset = SetVstancerPreset;
+            Action<int, float, float, float, float, object, object, object, object> setPreset = SetVstancerPreset;
             Exports.Add("SetVstancerPreset", setPreset);
             EventHandlers["setVstancerPreset"] += new Action<int, string>(ParseForSetVstancerPreset);
             Func<int, string> getPreset = GetVstancerPreset;

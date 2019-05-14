@@ -105,7 +105,7 @@ namespace Vstancer.Client
                     string plate = GetVehiclePlateType(vehicle);
                     string preset = GetVstancerPreset(vehicle);
 
-                    TriggerClientEvent("saveStancerPreset", vehicle, preset);
+                    TriggerServerEvent("saveStancerPreset", vehicle, preset);
                 }
             };
 
@@ -481,6 +481,8 @@ namespace Vstancer.Client
             int frontCount = preset.FrontWheelsCount;
 
             string result = $"{preset.OffsetX[0]},{preset.RotationY[0]},{preset.OffsetX[frontCount]},{preset.RotationY[frontCount]},{preset.DefaultOffsetX[0]},{preset.DefaultRotationY[0]},{preset.DefaultOffsetX[frontCount]},{preset.DefaultRotationY[frontCount]}";
+
+            return result;
         }
 
         private float toFloat(string number) {

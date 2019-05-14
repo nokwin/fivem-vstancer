@@ -454,25 +454,22 @@ namespace Vstancer.Client
         /// </summary>
         /// <param name="vehicle"></param>
         /// <returns></returns>
-        private float[] GetVstancerPreset(int vehicle)
+        private string GetVstancerPreset(int vehicle)
         {
             VstancerPreset preset = (vehicle == currentVehicle && currentPreset != null) ? currentPreset : CreatePreset(vehicle);
             int frontCount = preset.FrontWheelsCount;
 
-            return new float[] {
-                preset.OffsetX[0],
-                preset.RotationY[0],
-                preset.OffsetX[frontCount],
-                preset.RotationY[frontCount],
-                preset.DefaultOffsetX[0],
-                preset.DefaultRotationY[0],
-                preset.DefaultOffsetX[frontCount],
-                preset.DefaultRotationY[frontCount],
-            };
+            string result = $"{preset.OffsetX[0]},{preset.RotationY[0]},{preset.OffsetX[frontCount]},{preset.RotationY[frontCount]},{preset.DefaultOffsetX[0]},{preset.DefaultRotationY[0]},{preset.DefaultOffsetX[frontCount]},{preset.DefaultRotationY[frontCount]}";
         }
 
-        private void ParseForSetVstancerPreset(int vehicle, float[] preset) {
-            SetVstancerPreset(vehicle, preset[0], preset[1], preset[2], preset[3], preset[4], preset[5], preset[6], preset[7]);
+        private float toFloat(string number) {
+            return float.Parse(number, CultureInfo.InvariantCulture.NumberFormat);
+        }
+
+        private void ParseForSetVstancerPreset(int vehicle, string preset) {
+            string[] settings = preset.Split(',');
+
+            SetVstancerPreset(vehicle, toFloat(settings[0]), toFloat(settings[1]), toFloat(settings[2]), toFloat(settings[3]), toFloat(settings[4]), toFloat(settings[5]), toFloat(settings[6]), toFloat(settings[7]));
         }
 
         /// <summary>

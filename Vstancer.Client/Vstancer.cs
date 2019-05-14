@@ -105,7 +105,7 @@ namespace Vstancer.Client
                     var plate = GetVehiclePlateType(vehicle);
                     string preset = GetVstancerPreset(vehicle);
 
-                    TriggerServerEvent("saveStancerPreset", vehicle, preset);
+                    TriggerServerEvent("saveStancerPreset", plate, preset);
                 }
             };
 

@@ -166,6 +166,7 @@ namespace Vstancer.Client
             frontRotationGUI = AddDynamicFloatList(mainMenu, "Front Camber", currentPreset.DefaultRotationY[0], currentPreset.RotationY[0], frontMaxCamber);
             rearRotationGUI = AddDynamicFloatList(mainMenu, "Rear Camber", currentPreset.DefaultRotationY[currentPreset.FrontWheelsCount], currentPreset.RotationY[currentPreset.FrontWheelsCount], rearMaxCamber);
             AddMenuReset(mainMenu);
+            AddMenuSavePreset(mainMenu);
             mainMenu.RefreshIndex();
 
             if (menuController == null)

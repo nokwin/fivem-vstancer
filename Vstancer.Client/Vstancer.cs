@@ -486,7 +486,7 @@ namespace Vstancer.Client
         }
 
         private float toFloat(string number) {
-            return float.Parse(number, CultureInfo.InvariantCulture.NumberFormat);
+            return float.Parse(number);
         }
 
         private void ParseForSetVstancerPreset(int vehicle, string preset) {

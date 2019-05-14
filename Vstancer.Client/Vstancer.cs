@@ -91,6 +91,27 @@ namespace Vstancer.Client
             return newitem;
         }
 
+        private MenuItem AddMenuSavePreset(Menu menu)
+        {
+            var newitem = new MenuItem("Save preset", "Save preset to database");
+            menu.AddMenuItem(newitem);
+
+            menu.OnItemSelect += (sender, item, index) =>
+            {
+                if (item == newitem)
+                {
+                    int playerPed = PlayerPedId();
+                    int vehicle = GetVehiclePedIsIn(playerPed, false);
+                    string plate = GetVehiclePlateType(vehicle);
+                    string preset = GetVstancerPreset(vehicle);
+
+                    TriggerClientEvent("saveStancerPreset", vehicle, preset);
+                }
+            };
+
+            return newitem;
+        }
+
         private MenuDynamicListItem AddDynamicFloatList(Menu menu, string name, float defaultValue, float value, float maxEditing)
         {
             string FloatChangeCallback(MenuDynamicListItem sender, bool left)

@@ -273,10 +273,10 @@ namespace Vstancer.Client
                 }));
             }
 
-            Action<int, float, float, float, float, object, object, object, object> setPreset = SetVstancerPreset;
+            Action<int, string> setPreset = SetVstancerPreset;
             Exports.Add("SetVstancerPreset", setPreset);
-            EventHandlers["setVstancerPreset"] += new Action<int, float[]>(ParseForSetVstancerPreset);
-            Func<int, float[]> getPreset = GetVstancerPreset;
+            EventHandlers["setVstancerPreset"] += new Action<int, string>(ParseForSetVstancerPreset);
+            Func<int, string> getPreset = GetVstancerPreset;
             Exports.Add("GetVstancerPreset", getPreset);
 
             Tick += MenuTask;

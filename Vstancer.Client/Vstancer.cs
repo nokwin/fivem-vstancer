@@ -167,7 +167,7 @@ namespace Vstancer.Client
             rearOffsetGUI = AddDynamicFloatList(mainMenu, "Ширина задней оси", -currentPreset.DefaultOffsetX[currentPreset.FrontWheelsCount], -currentPreset.OffsetX[currentPreset.FrontWheelsCount], rearMaxOffset);
             frontRotationGUI = AddDynamicFloatList(mainMenu, "Передний развал", currentPreset.DefaultRotationY[0], currentPreset.RotationY[0], frontMaxCamber);
             rearRotationGUI = AddDynamicFloatList(mainMenu, "Задний развал", currentPreset.DefaultRotationY[currentPreset.FrontWheelsCount], currentPreset.RotationY[currentPreset.FrontWheelsCount], rearMaxCamber);
-            steeringLockGUI = AddDynamicFloatList(mainMenu, "Выворот", currentPreset.SteeringLockOffset, 30.0, 30.0);
+            steeringLockGUI = AddDynamicFloatList(mainMenu, "Выворот", currentPreset.SteeringLockOffset, (float)30.0, (float)30.0);
             AddMenuReset(mainMenu);
             AddMenuSavePreset(mainMenu);
             mainMenu.RefreshIndex();
@@ -277,7 +277,7 @@ namespace Vstancer.Client
                 }));
             }
 
-            Action<int, float, float, float, float, object, object, object, object, float> setPreset = SetVstancerPreset;
+            Action<int, float, float, float, float, float, object, object, object, object> setPreset = SetVstancerPreset;
             Exports.Add("SetVstancerPreset", setPreset);
             EventHandlers["setVstancerPreset"] += new Action<int, string>(ParseForSetVstancerPreset);
             Func<int, string> getPreset = GetVstancerPreset;
@@ -496,7 +496,7 @@ namespace Vstancer.Client
         private void ParseForSetVstancerPreset(int vehicle, string preset) {
             string[] settings = preset.Split(',');
 
-            SetVstancerPreset(vehicle, toFloat(settings[0]), toFloat(settings[1]), toFloat(settings[2]), toFloat(settings[3]), toFloat(settings[8], toFloat(settings[4]), toFloat(settings[5]), toFloat(settings[6]), toFloat(settings[7])));
+            SetVstancerPreset(vehicle, toFloat(settings[0]), toFloat(settings[1]), toFloat(settings[2]), toFloat(settings[3]), toFloat(settings[8]), toFloat(settings[4]), toFloat(settings[5]), toFloat(settings[6]), toFloat(settings[7]));
         }
 
         /// <summary>

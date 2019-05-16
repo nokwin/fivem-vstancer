@@ -113,7 +113,7 @@ namespace Vstancer.Client
             return newitem;
         }
 
-        private MenuDynamicListItem AddDynamicFloatList(Menu menu, string name, float defaultValue, float value, float maxEditing, float step = null)
+        private MenuDynamicListItem AddDynamicFloatList(Menu menu, string name, float defaultValue, float value, float maxEditing, float step = 0.0)
         {
             string FloatChangeCallback(MenuDynamicListItem sender, bool left)
             {

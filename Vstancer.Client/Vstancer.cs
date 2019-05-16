@@ -496,7 +496,7 @@ namespace Vstancer.Client
         private void ParseForSetVstancerPreset(int vehicle, string preset) {
             string[] settings = preset.Split(',');
 
-            SetVstancerPreset(vehicle, toFloat(settings[0]), toFloat(settings[1]), toFloat(settings[2]), toFloat(settings[3]), toFloat(settings[4]), toFloat(settings[5]), toFloat(settings[6]), toFloat(settings[7], toFloat(settings[8])));
+            SetVstancerPreset(vehicle, toFloat(settings[0]), toFloat(settings[1]), toFloat(settings[2]), toFloat(settings[3]), toFloat(settings[8], toFloat(settings[4]), toFloat(settings[5]), toFloat(settings[6]), toFloat(settings[7])));
         }
 
         /// <summary>
@@ -512,7 +512,7 @@ namespace Vstancer.Client
         /// <param name="defaultRearOffset"></param>
         /// <param name="defaultRearRotation"></param>
         /// <param name="steeringLockOffset"></param>
-        private void SetVstancerPreset(int vehicle, float off_f, float rot_f, float off_r, float rot_r, object defaultFrontOffset = null, object defaultFrontRotation = null, object defaultRearOffset = null, object defaultRearRotation = null, float steeringLock)
+        private void SetVstancerPreset(int vehicle, float off_f, float rot_f, float off_r, float rot_r, float steeringLock, object defaultFrontOffset = null, object defaultFrontRotation = null, object defaultRearOffset = null, object defaultRearRotation = null)
         {
             if (debug)
             {

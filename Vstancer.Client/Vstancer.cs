@@ -65,6 +65,7 @@ namespace Vstancer.Client
         private MenuDynamicListItem rearOffsetGUI;
         private MenuDynamicListItem frontRotationGUI;
         private MenuDynamicListItem rearRotationGUI;
+        private MenuDynamicListItem steeringLockGUI;
 
         #endregion
 
@@ -137,6 +138,7 @@ namespace Vstancer.Client
                     else if (sender == rearRotationGUI) currentPreset.SetRotationRear(value);
                     else if (sender == frontOffsetGUI) currentPreset.SetOffsetFront(-value);
                     else if (sender == rearOffsetGUI) currentPreset.SetOffsetRear(-value);
+                    else if (sender == steeringLockGUI) currentPreset.SteeringLockOffset = value;
 
                     // Force one single refresh to update rendering at correct position after reset
                     if (value == defaultValue)
@@ -160,11 +162,12 @@ namespace Vstancer.Client
                 mainMenu = new Menu(ScriptName, "Editor");
             }
             else mainMenu.ClearMenuItems();
-
-            frontOffsetGUI = AddDynamicFloatList(mainMenu, "Front Track Width", -currentPreset.DefaultOffsetX[0], -currentPreset.OffsetX[0], frontMaxOffset);
-            rearOffsetGUI = AddDynamicFloatList(mainMenu, "Rear Track Width", -currentPreset.DefaultOffsetX[currentPreset.FrontWheelsCount], -currentPreset.OffsetX[currentPreset.FrontWheelsCount], rearMaxOffset);
-            frontRotationGUI = AddDynamicFloatList(mainMenu, "Front Camber", currentPreset.DefaultRotationY[0], currentPreset.RotationY[0], frontMaxCamber);
-            rearRotationGUI = AddDynamicFloatList(mainMenu, "Rear Camber", currentPreset.DefaultRotationY[currentPreset.FrontWheelsCount], currentPreset.RotationY[currentPreset.FrontWheelsCount], rearMaxCamber);
+// fSteeringLock
+            frontOffsetGUI = AddDynamicFloatList(mainMenu, "Ширина передней оси", -currentPreset.DefaultOffsetX[0], -currentPreset.OffsetX[0], frontMaxOffset);
+            rearOffsetGUI = AddDynamicFloatList(mainMenu, "Ширина задней оси", -currentPreset.DefaultOffsetX[currentPreset.FrontWheelsCount], -currentPreset.OffsetX[currentPreset.FrontWheelsCount], rearMaxOffset);
+            frontRotationGUI = AddDynamicFloatList(mainMenu, "Передний развал", currentPreset.DefaultRotationY[0], currentPreset.RotationY[0], frontMaxCamber);
+            rearRotationGUI = AddDynamicFloatList(mainMenu, "Задний развал", currentPreset.DefaultRotationY[currentPreset.FrontWheelsCount], currentPreset.RotationY[currentPreset.FrontWheelsCount], rearMaxCamber);
+            steeringLockGUI = AddDynamicFloatList(mainMenu, "Выворот", currentPreset.SteeringLockOffset, 30.0, 30.0);
             AddMenuReset(mainMenu);
             AddMenuSavePreset(mainMenu);
             mainMenu.RefreshIndex();
@@ -274,7 +277,7 @@ namespace Vstancer.Client
                 }));
             }
 
-            Action<int, float, float, float, float, object, object, object, object> setPreset = SetVstancerPreset;
+            Action<int, float, float, float, float, object, object, object, object, float> setPreset = SetVstancerPreset;
             Exports.Add("SetVstancerPreset", setPreset);
             EventHandlers["setVstancerPreset"] += new Action<int, string>(ParseForSetVstancerPreset);
             Func<int, string> getPreset = GetVstancerPreset;
@@ -481,7 +484,7 @@ namespace Vstancer.Client
             VstancerPreset preset = (vehicle == currentVehicle && currentPreset != null) ? currentPreset : CreatePreset(vehicle);
             int frontCount = preset.FrontWheelsCount;
 
-            string result = $"{preset.OffsetX[0]},{preset.RotationY[0]},{preset.OffsetX[frontCount]},{preset.RotationY[frontCount]},{preset.DefaultOffsetX[0]},{preset.DefaultRotationY[0]},{preset.DefaultOffsetX[frontCount]},{preset.DefaultRotationY[frontCount]}";
+            string result = $"{preset.OffsetX[0]},{preset.RotationY[0]},{preset.OffsetX[frontCount]},{preset.RotationY[frontCount]},{preset.DefaultOffsetX[0]},{preset.DefaultRotationY[0]},{preset.DefaultOffsetX[frontCount]},{preset.DefaultRotationY[frontCount]},{preset.SteeringLockOffset}";
 
             return result;
         }
@@ -493,7 +496,7 @@ namespace Vstancer.Client
         private void ParseForSetVstancerPreset(int vehicle, string preset) {
             string[] settings = preset.Split(',');
 
-            SetVstancerPreset(vehicle, toFloat(settings[0]), toFloat(settings[1]), toFloat(settings[2]), toFloat(settings[3]), toFloat(settings[4]), toFloat(settings[5]), toFloat(settings[6]), toFloat(settings[7]));
+            SetVstancerPreset(vehicle, toFloat(settings[0]), toFloat(settings[1]), toFloat(settings[2]), toFloat(settings[3]), toFloat(settings[4]), toFloat(settings[5]), toFloat(settings[6]), toFloat(settings[7], toFloat(settings[8])));
         }
 
         /// <summary>
@@ -508,7 +511,8 @@ namespace Vstancer.Client
         /// <param name="defaultFrontRotation"></param>
         /// <param name="defaultRearOffset"></param>
         /// <param name="defaultRearRotation"></param>
-        private void SetVstancerPreset(int vehicle, float off_f, float rot_f, float off_r, float rot_r, object defaultFrontOffset = null, object defaultFrontRotation = null, object defaultRearOffset = null, object defaultRearRotation = null)
+        /// <param name="steeringLockOffset"></param>
+        private void SetVstancerPreset(int vehicle, float off_f, float rot_f, float off_r, float rot_r, object defaultFrontOffset = null, object defaultFrontRotation = null, object defaultRearOffset = null, object defaultRearRotation = null, float steeringLock)
         {
             if (debug)
             {
@@ -547,7 +551,7 @@ namespace Vstancer.Client
 
             if (vehicle == currentVehicle)
             {
-                currentPreset = new VstancerPreset(wheelsCount, rot_f, rot_r, off_f, off_r, rot_f_def, rot_r_def, off_f_def, off_r_def);
+                currentPreset = new VstancerPreset(wheelsCount, rot_f, rot_r, off_f, off_r, rot_f_def, rot_r_def, off_f_def, off_r_def, steeringLock);
                 BuildMenu();
             }
             else
@@ -561,6 +565,8 @@ namespace Vstancer.Client
                 UpdateFloatDecorator(vehicle, decor_rot_f, rot_f, rot_f_def);
                 UpdateFloatDecorator(vehicle, decor_off_r, off_r, off_r_def);
                 UpdateFloatDecorator(vehicle, decor_rot_r, rot_r, rot_r_def);
+
+                SetVehicleHandlingFloat(vehicle, "CHandlingData", "fSteeringLock", steeringLock);
             }
         }
 
@@ -616,6 +622,8 @@ namespace Vstancer.Client
             UpdateFloatDecorator(vehicle, decor_rot_f, RotationY[0], DefaultRotationY[0]);
             UpdateFloatDecorator(vehicle, decor_off_r, OffsetX[frontCount], DefaultOffsetX[frontCount]);
             UpdateFloatDecorator(vehicle, decor_rot_r, RotationY[frontCount], DefaultRotationY[frontCount]);
+
+            SetVehicleHandlingFloat(vehicle, "CHandlingData", "fSteeringLock", preset.SteeringLockOffset);
         }
 
         /// <summary>
@@ -641,7 +649,9 @@ namespace Vstancer.Client
             float off_r = DecorExistOn(vehicle, decor_off_r) ? DecorGetFloat(vehicle, decor_off_r) : off_r_def;
             float rot_r = DecorExistOn(vehicle, decor_rot_r) ? DecorGetFloat(vehicle, decor_rot_r) : rot_r_def;
 
-            return new VstancerPreset(wheelsCount, rot_f, rot_r, off_f, off_r, rot_f_def, rot_r_def, off_f_def, off_r_def);
+            float steeringLock = GetVehicleHandlingFloat(vehicle, "CHandlingData", "fSteeringLock");
+
+            return new VstancerPreset(wheelsCount, rot_f, rot_r, off_f, off_r, rot_f_def, rot_r_def, off_f_def, off_r_def, steeringLock);
         }
 
         /// <summary>
@@ -658,6 +668,8 @@ namespace Vstancer.Client
                 SetVehicleWheelXOffset(vehicle, index, preset.OffsetX[index]);
                 SetVehicleWheelYRotation(vehicle, index, preset.RotationY[index]);
             }
+
+            SetVehicleHandlingFloat(vehicle, "CHandlingData", "fSteeringLock", preset.SteeringLockOffset);
         }
 
         /// <summary>

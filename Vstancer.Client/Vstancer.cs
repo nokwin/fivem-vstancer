@@ -113,7 +113,7 @@ namespace Vstancer.Client
             return newitem;
         }
 
-        private MenuDynamicListItem AddDynamicFloatList(Menu menu, string name, float defaultValue, float value, float maxEditing)
+        private MenuDynamicListItem AddDynamicFloatList(Menu menu, string name, float defaultValue, float value, float maxEditing, float step = FloatStep)
         {
             string FloatChangeCallback(MenuDynamicListItem sender, bool left)
             {
@@ -122,9 +122,9 @@ namespace Vstancer.Client
                 float max = defaultValue + maxEditing;
 
                 if (left)
-                    newvalue -= FloatStep;
+                    newvalue -= step;
                 else if (!left)
-                    newvalue += FloatStep;
+                    newvalue += step;
                 else return value.ToString("F3");
 
                 if (newvalue < min)
@@ -167,7 +167,7 @@ namespace Vstancer.Client
             rearOffsetGUI = AddDynamicFloatList(mainMenu, "Ширина задней оси", -currentPreset.DefaultOffsetX[currentPreset.FrontWheelsCount], -currentPreset.OffsetX[currentPreset.FrontWheelsCount], rearMaxOffset);
             frontRotationGUI = AddDynamicFloatList(mainMenu, "Передний развал", currentPreset.DefaultRotationY[0], currentPreset.RotationY[0], frontMaxCamber);
             rearRotationGUI = AddDynamicFloatList(mainMenu, "Задний развал", currentPreset.DefaultRotationY[currentPreset.FrontWheelsCount], currentPreset.RotationY[currentPreset.FrontWheelsCount], rearMaxCamber);
-            steeringLockGUI = AddDynamicFloatList(mainMenu, "Выворот", currentPreset.SteeringLockOffset, (float)30.0, (float)30.0);
+            steeringLockGUI = AddDynamicFloatList(mainMenu, "Выворот", currentPreset.SteeringLockOffset, (float)30.0, (float)30.0, (float)1.0);
             AddMenuReset(mainMenu);
             AddMenuSavePreset(mainMenu);
             mainMenu.RefreshIndex();

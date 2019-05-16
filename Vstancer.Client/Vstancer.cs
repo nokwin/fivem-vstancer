@@ -113,7 +113,7 @@ namespace Vstancer.Client
             return newitem;
         }
 
-        private MenuDynamicListItem AddDynamicFloatList(Menu menu, string name, float defaultValue, float value, float maxEditing, float step = FloatStep)
+        private MenuDynamicListItem AddDynamicFloatList(Menu menu, string name, float defaultValue, float value, float maxEditing, float step = null)
         {
             string FloatChangeCallback(MenuDynamicListItem sender, bool left)
             {
@@ -121,10 +121,15 @@ namespace Vstancer.Client
                 float min = defaultValue - maxEditing;
                 float max = defaultValue + maxEditing;
 
-                if (left)
+                if (left && step == null) {
+                    newvalue -= FloatStep;
+                } else if (left && step != null) {
                     newvalue -= step;
-                else if (!left)
+                } else if (!left && step == null) {
+                    newvalue += FloatStep;
+                } else if (!left && step != null) {
                     newvalue += step;
+                }
                 else return value.ToString("F3");
 
                 if (newvalue < min)

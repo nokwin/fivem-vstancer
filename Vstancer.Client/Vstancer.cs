@@ -121,13 +121,13 @@ namespace Vstancer.Client
                 float min = defaultValue - maxEditing;
                 float max = defaultValue + maxEditing;
 
-                if (left && step == null) {
+                if (left && step == (float)0.0) {
                     newvalue -= FloatStep;
-                } else if (left && step != null) {
+                } else if (left && step != (float)0.0) {
                     newvalue -= step;
-                } else if (!left && step == null) {
+                } else if (!left && step == (float)0.0) {
                     newvalue += FloatStep;
-                } else if (!left && step != null) {
+                } else if (!left && step != (float)0.0) {
                     newvalue += step;
                 }
                 else return value.ToString("F3");

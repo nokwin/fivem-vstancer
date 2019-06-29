@@ -172,7 +172,7 @@ namespace Vstancer.Client
             rearOffsetGUI = AddDynamicFloatList(mainMenu, "Ширина задней оси", -currentPreset.DefaultOffsetX[currentPreset.FrontWheelsCount], -currentPreset.OffsetX[currentPreset.FrontWheelsCount], rearMaxOffset);
             frontRotationGUI = AddDynamicFloatList(mainMenu, "Передний развал", currentPreset.DefaultRotationY[0], currentPreset.RotationY[0], frontMaxCamber);
             rearRotationGUI = AddDynamicFloatList(mainMenu, "Задний развал", currentPreset.DefaultRotationY[currentPreset.FrontWheelsCount], currentPreset.RotationY[currentPreset.FrontWheelsCount], rearMaxCamber);
-            steeringLockGUI = AddDynamicFloatList(mainMenu, "Выворот", currentPreset.SteeringLockOffset, (float)30.0, (float)30.0, (float)1.0);
+            steeringLockGUI = AddDynamicFloatList(mainMenu, "Выворот", GetVehicleHandlingFloat(vehicle, "CHandlingData", "fSteeringLock"), currentPreset.SteeringLockOffset, (float)30.0, (float)1.0);
             AddMenuReset(mainMenu);
             AddMenuSavePreset(mainMenu);
             mainMenu.RefreshIndex();

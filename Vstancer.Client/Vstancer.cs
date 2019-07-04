@@ -504,7 +504,7 @@ namespace Vstancer.Client
         private void ParseForSetVstancerPreset(int vehicle, string preset) {
             string[] settings = preset.Split(',');
 
-            SetVstancerPreset(vehicle, toFloat(settings[0]), toFloat(settings[1]), toFloat(settings[2]), toFloat(settings[3]), toFloat(settings[8]), toFloat(settings[4]), toFloat(settings[5]), toFloat(settings[6]), toFloat(settings[7]));
+            SetVstancerPreset(vehicle, toFloat(settings[0]), toFloat(settings[1]), toFloat(settings[2]), toFloat(settings[3]), toFloat(settings[8]), toFloat(settings[9]), toFloat(settings[4]), toFloat(settings[5]), toFloat(settings[6]), toFloat(settings[7]));
         }
 
         /// <summary>

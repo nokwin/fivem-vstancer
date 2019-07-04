@@ -15,6 +15,7 @@ namespace Vstancer.Client
         public float[] OffsetX { get; set; }
 
         public float SteeringLockOffset { get; set; }
+        public float SuspensionRaiseOffset { get; set; }
 
         public void SetOffsetFront(float value)
         {
@@ -64,6 +65,7 @@ namespace Vstancer.Client
             OffsetX = new float[] { 0, 0, 0, 0 };
 
             SteeringLockOffset = 0;
+            SuspensionRaiseOffset = 0;
         }
 
         public VstancerPreset(int count, float[] defRot, float[] defOff)
@@ -89,7 +91,7 @@ namespace Vstancer.Client
             }
         }
 
-        public VstancerPreset(int count, float currentRotFront, float currentRotRear, float currentOffFront, float currentOffRear, float defRotFront, float defRotRear, float defOffFront, float defOffRear, float steeringLockOffset)
+        public VstancerPreset(int count, float currentRotFront, float currentRotRear, float currentOffFront, float currentOffRear, float defRotFront, float defRotRear, float defOffFront, float defOffRear, float steeringLockOffset, float suspensionRaiseOffset)
         {
             WheelsCount = count;
 
@@ -139,6 +141,7 @@ namespace Vstancer.Client
             }
 
             SteeringLockOffset = steeringLockOffset;
+            SuspensionRaiseOffset = suspensionRaiseOffset;
         }
 
         public void Reset()
@@ -165,6 +168,10 @@ namespace Vstancer.Client
             }
 
             if (SteeringLockOffset != other.SteeringLockOffset) {
+                return false;
+            }
+
+            if (SuspensionRaiseOffset != other.SuspensionRaiseOffset) {
                 return false;
             }
 

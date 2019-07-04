@@ -66,6 +66,7 @@ namespace Vstancer.Client
         private MenuDynamicListItem frontRotationGUI;
         private MenuDynamicListItem rearRotationGUI;
         private MenuDynamicListItem steeringLockGUI;
+        private MenuDynamicListItem suspensionRaiseGUI;
 
         #endregion
 
@@ -144,6 +145,7 @@ namespace Vstancer.Client
                     else if (sender == frontOffsetGUI) currentPreset.SetOffsetFront(-value);
                     else if (sender == rearOffsetGUI) currentPreset.SetOffsetRear(-value);
                     else if (sender == steeringLockGUI) currentPreset.SteeringLockOffset = value;
+                    else if (sender == suspensionRaiseGUI) currentPreset.SuspensionRaiseOffset = value;
 
                     // Force one single refresh to update rendering at correct position after reset
                     if (value == defaultValue)
@@ -173,6 +175,7 @@ namespace Vstancer.Client
             frontRotationGUI = AddDynamicFloatList(mainMenu, "Передний развал", currentPreset.DefaultRotationY[0], currentPreset.RotationY[0], frontMaxCamber);
             rearRotationGUI = AddDynamicFloatList(mainMenu, "Задний развал", currentPreset.DefaultRotationY[currentPreset.FrontWheelsCount], currentPreset.RotationY[currentPreset.FrontWheelsCount], rearMaxCamber);
             steeringLockGUI = AddDynamicFloatList(mainMenu, "Выворот", GetVehicleHandlingFloat(GetVehiclePedIsIn(playerPed, false), "CHandlingData", "fSteeringLock"), currentPreset.SteeringLockOffset, (float)30.0, (float)1.0);
+            suspensionRaiseGUI = AddDynamicFloatList(mainMenu, "Высота подвески", GetVehicleHandlingFloat(GetVehiclePedIsIn(playerPed, false), "CHandlingData", "fSuspensionRaise"), currentPreset.SuspensionRaiseOffset, 5.0f);
             AddMenuReset(mainMenu);
             AddMenuSavePreset(mainMenu);
             mainMenu.RefreshIndex();
@@ -282,7 +285,7 @@ namespace Vstancer.Client
                 }));
             }
 
-            Action<int, float, float, float, float, float, object, object, object, object> setPreset = SetVstancerPreset;
+            Action<int, float, float, float, float, float, float, object, object, object, object> setPreset = SetVstancerPreset;
             Exports.Add("SetVstancerPreset", setPreset);
             EventHandlers["setVstancerPreset"] += new Action<int, string>(ParseForSetVstancerPreset);
             Func<int, string> getPreset = GetVstancerPreset;
@@ -489,7 +492,7 @@ namespace Vstancer.Client
             VstancerPreset preset = (vehicle == currentVehicle && currentPreset != null) ? currentPreset : CreatePreset(vehicle);
             int frontCount = preset.FrontWheelsCount;
 
-            string result = $"{preset.OffsetX[0]},{preset.RotationY[0]},{preset.OffsetX[frontCount]},{preset.RotationY[frontCount]},{preset.DefaultOffsetX[0]},{preset.DefaultRotationY[0]},{preset.DefaultOffsetX[frontCount]},{preset.DefaultRotationY[frontCount]},{preset.SteeringLockOffset}";
+            string result = $"{preset.OffsetX[0]},{preset.RotationY[0]},{preset.OffsetX[frontCount]},{preset.RotationY[frontCount]},{preset.DefaultOffsetX[0]},{preset.DefaultRotationY[0]},{preset.DefaultOffsetX[frontCount]},{preset.DefaultRotationY[frontCount]},{preset.SteeringLockOffset},{preset.SuspensionRaiseOffset}";
 
             return result;
         }
@@ -512,12 +515,13 @@ namespace Vstancer.Client
         /// <param name="rot_f"></param>
         /// <param name="off_r"></param>
         /// <param name="rot_r"></param>
+        /// <param name="steeringLock"></param>
+        /// <param name="suspensionRaise"></param>
         /// <param name="defaultFrontOffset"></param>
         /// <param name="defaultFrontRotation"></param>
         /// <param name="defaultRearOffset"></param>
         /// <param name="defaultRearRotation"></param>
-        /// <param name="steeringLockOffset"></param>
-        private void SetVstancerPreset(int vehicle, float off_f, float rot_f, float off_r, float rot_r, float steeringLock, object defaultFrontOffset = null, object defaultFrontRotation = null, object defaultRearOffset = null, object defaultRearRotation = null)
+        private void SetVstancerPreset(int vehicle, float off_f, float rot_f, float off_r, float rot_r, float steeringLock, float suspensionRaise, object defaultFrontOffset = null, object defaultFrontRotation = null, object defaultRearOffset = null, object defaultRearRotation = null)
         {
             if (debug)
             {
@@ -572,6 +576,7 @@ namespace Vstancer.Client
                 UpdateFloatDecorator(vehicle, decor_rot_r, rot_r, rot_r_def);
 
                 SetVehicleHandlingFloat(vehicle, "CHandlingData", "fSteeringLock", steeringLock);
+                SetVehicleHandlingFloat(vehicle, "CHandlingData", "fSuspensionRaiuse", suspensionRaise);
             }
         }
 
@@ -629,6 +634,7 @@ namespace Vstancer.Client
             UpdateFloatDecorator(vehicle, decor_rot_r, RotationY[frontCount], DefaultRotationY[frontCount]);
 
             SetVehicleHandlingFloat(vehicle, "CHandlingData", "fSteeringLock", preset.SteeringLockOffset);
+            SetVehicleHandlingFloat(vehicle, "CHandlingData", "fSuspensionRaise", preset.SuspensionRaiseOffset);
         }
 
         /// <summary>
@@ -655,8 +661,9 @@ namespace Vstancer.Client
             float rot_r = DecorExistOn(vehicle, decor_rot_r) ? DecorGetFloat(vehicle, decor_rot_r) : rot_r_def;
 
             float steeringLock = GetVehicleHandlingFloat(vehicle, "CHandlingData", "fSteeringLock");
+            float suspensionRaise = GetVehicleHandlingFloat(vehicle, "CHandlingData", "fSuspensionRaise");
 
-            return new VstancerPreset(wheelsCount, rot_f, rot_r, off_f, off_r, rot_f_def, rot_r_def, off_f_def, off_r_def, steeringLock);
+            return new VstancerPreset(wheelsCount, rot_f, rot_r, off_f, off_r, rot_f_def, rot_r_def, off_f_def, off_r_def, steeringLock, suspensionRaise);
         }
 
         /// <summary>
@@ -675,6 +682,7 @@ namespace Vstancer.Client
             }
 
             SetVehicleHandlingFloat(vehicle, "CHandlingData", "fSteeringLock", preset.SteeringLockOffset);
+            SetVehicleHandlingFloat(vehicle, "CHandlingData", "fSuspensionRaise", preset.SuspensionRaiseOffset);
         }
 
         /// <summary>
